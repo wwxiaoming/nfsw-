@@ -1,0 +1,31 @@
+# Standardize Pixiv Chapter Names v2 — Checklist
+
+- [x] 1. `cn_num_to_int` 单测全部通过（一/十/十三/二十三/一百/一百零五）
+- [x] 2. `parse_title` 单测全部通过：
+  - [x] 2.1 `第一章 雄鹰末路` → designation=`章`, number=1, subtitle=`雄鹰末路`
+  - [x] 2.2 `第十四章` → designation=`章`, number=14, subtitle=``
+  - [x] 2.3 `序章 鬼影` → designation=`序章`, number=None, subtitle=`鬼影`
+  - [x] 2.4 `终章 人间` → designation=`终章`, number=None, subtitle=`人间`
+  - [x] 2.5 `第一季后记` → designation=`后记`, number=1, subtitle=``
+  - [x] 2.6 `第一季终章` → designation=`终章`, number=1, subtitle=``
+  - [x] 2.7 `番外 番外二` → designation=`番外`, number=None, subtitle=`番外二`
+  - [x] 2.8 `幕间` → designation=`幕间`, number=None, subtitle=``
+  - [x] 2.9 `if线 其一 三人行` → designation=`if线`, number=None, subtitle=`其一 三人行`
+- [x] 3. 作品内 rank 计算抽样验证：
+  - [x] 3.1 `奥鲁斯托的少年英雄小说（连载中）` 的 4 条按创建时间升序排，rank 1 = 第一章 雄鹰末路
+  - [x] 3.2 `都市传说天象旅店` 的 16 条按创建时间升序排，rank 1 = 第一章 总偷瓶子的虎哥
+- [x] 4. 文件 → 作品信息 entry 匹配抽样：
+  - [x] 4.1 `深渊之役` 的 `#2 第二张` 错字 → 匹配到对应 entry
+  - [x] 4.2 `奥鲁斯托` 的 `#1 第一章 雄鹰末路` → 匹配到 entry（即使 #N 顺序与 作品信息 顺序方向相反）
+- [x] 5. 新文件名抽样：
+  - [x] 5.1 `奥鲁斯托的少年英雄小说（连载中）` 4 个文件 → `第 1 章 雄鹰末路.txt` / `第 2 章 孤狼.txt` / `第 3 章 浪潮.txt` / `第 4 章 向彗星许愿（一周年纪念版）.txt`
+  - [x] 5.2 `都市传说天象旅店` 16 个文件 → `第 1 章 总偷瓶子的虎哥.txt` ... `第 14 章.txt` ... `15 终章.txt` ... `16 后记.txt`
+  - [x] 5.3 `深渊之役` → `第 1 章 堕落的精牛.txt` ... `第 10 章 诱捕烁炎（下）.txt`（按创建时间从早到晚）
+  - [x] 5.4 `天启者联盟` 各种 designation 都能正确分类
+  - [x] 5.5 `小英雄协会` 序章/中/下等特殊 designation
+- [x] 6. 文件名排序验证：`pixiv_renamed/<作品目录>/` 下文件按文件名升序，章节按阅读顺序排
+- [x] 7. 输出目录 `/workspace/pixiv_renamed/` 重新生成，目录结构与 `pixiv_workspace/` 一致
+- [x] 8. 字节内容校验：源/目标 MD5 一致
+- [x] 9. `作品信息.txt` 在 `pixiv_renamed/` 下原样保留
+- [x] 10. 原 `/workspace/pixiv_workspace/` 未被修改
+- [x] 11. `rename_report.md` 重新生成
