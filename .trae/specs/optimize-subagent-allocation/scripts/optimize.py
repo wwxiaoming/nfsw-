@@ -314,7 +314,11 @@ def render_md(agents):
                 seg_tag = f"（子段 {s['seg_idx']}/{s['seg_cnt']}）" if s["is_segment"] else ""
                 lines.append(f"| {i} | {title}{seg_tag} | {path} | {ch_disp} | {kb_disp} | {mandatory} | ≥{char_min_v:,} | {actual} | {write} |")
             lines.append(f"- **本 sub-agent 字符下限合计**：≥{char_total:,}")
-            lines.append(f"- **本 sub-agent 总大小**：{a['total_kb']:.1f} KB（硬约束 ≤ 500KB ✓）")
+            if a['total_kb'] > HARD_LIMIT:
+                # 单章硬读情况
+                lines.append(f"- **本 sub-agent 总大小**：{a['total_kb']:.1f} KB（**单章硬读** ⚠，单章节文件 > 500KB 无法再拆分，sub-agent 需直接 Read 全文，注意上下文溢出风险）")
+            else:
+                lines.append(f"- **本 sub-agent 总大小**：{a['total_kb']:.1f} KB（硬约束 ≤ 500KB ✓）")
             if has_seg:
                 lines.append("- **特别说明**：含超限本子段，已按章节大小预拆分，sub-agent 直接读子段路径")
             lines.append("")
@@ -428,7 +432,12 @@ def main():
             if actual_total < n["total_kb"] * 0.95 and actual_total > 0:
                 scale = n["total_kb"] / actual_total
                 chapters = [(i, nm, int(sz * scale)) for i, nm, sz in chapters]
-            splits = greedy_split(chapters, HARD_LIMIT)
+            # 单章节且单章 > 500KB：不拆分，硬读
+            if len(chapters) <= 1:
+                kb = chapters[0][2] / 1024.0 if chapters else n["total_kb"]
+                splits = [(chapters[0][0] if chapters else 1, chapters[-1][0] if chapters else n["chapters"], kb)]
+            else:
+                splits = greedy_split(chapters, HARD_LIMIT)
             for i, (s, e, kb) in enumerate(splits, 1):
                 segments.append({
                     "title": title, "seg_idx": i, "seg_cnt": len(splits),
