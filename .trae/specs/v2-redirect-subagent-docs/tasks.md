@@ -87,7 +87,7 @@
 ## Phase 9: 通知用户（草稿态交付完毕）
 - [x] 9.1 已交付 2 份源文档 + 12 份交付物（草稿态）✓
 - [x] 9.2 等待用户提供 6 份 `pixiv_深度阅读笔记_*.md` 阅读 + 结合草稿进一步优化 skill
-- [x] 9.3 等待用户决定是否新增 10 份可选 references（subtype_decision_tree / xp_match_patterns / quality_weight_rubric / multi_subtype_blend / sibling_dynamic_patterns / body_data_card_extended / subtype_priority_guide / boundary_handling_sop / rhythm_subtype_specifics / vocabulary_subtype_specifics）
+- [x] 9.3 等待用户决定是否新增 11 份可选 references（subtype_decision_tree / xp_match_patterns / quality_weight_rubric / multi_subtype_blend / **榨精生物** / **榨精道具** / body_data_card_extended / subtype_priority_guide / boundary_handling_sop / rhythm_subtype_specifics / vocabulary_subtype_specifics；**已删除** `sibling_dynamic_patterns.md`）
 
 ## 不做（明确范围 - 已确认）
 - 不改 xiaoyingxiong skill（任何文件，包括 SKILL.md 和 references/）

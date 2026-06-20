@@ -81,7 +81,7 @@ v3 spec（`optimize-documents-from-notes`）方向被用户**反转**，v2 spec 
 | 22 | **雷点命中清单** | 边界 | 雷女性 / 雷血腥 / 雷袜鞋品牌（**无父子**，按用户要求） |
 | 23 | **白袜 vs 品牌名** | 边界 | **白袜**是加分项，**Nike/Adidas 品牌名**是减分项 |
 | 24 | **T7-T9 新模板** | 方向 7 | T7 正太校园 / T8 修真玄幻 / T9 同人 IP |
-| 25 | **10 份可选增量 references 建议** | 方向 4 | 多份候选（见下方 F 节） |
+| 25 | **11 份可选增量 references 建议** | 方向 4 | 多份候选（见下方 F 节） |
 | 26 | **子类型优先级建议（非硬指标）** | 方向 5 | 6 批量 → 9 子类型 + 建议权重 |
 | 27 | **多子类型冲突清单（建议）** | 方向 1 | 可参考组合（战队+触手+足控 等），非绝对 |
 | 28 | **同人原作 IP 自由度** | 方向 5 | **删硬版权敏感度**，改为可参考原作 IP + 自由发挥 |
@@ -181,17 +181,18 @@ v3 spec（`optimize-documents-from-notes`）方向被用户**反转**，v2 spec 
   6. 标志场景/钩子/模板的三层分离
   7. 基于 XP 的子模板差异化生成
   8. 数据化精度的进一步细化
-- **10 份可选增量 references**（草稿后用户可决定是否新增）：
+- **11 份可选增量 references**（草稿后用户可决定是否新增）：
   1. `subtype_decision_tree.md`（**必须**：子类型决策表）
   2. `xp_match_patterns.md`（**建议**：XP 命中模式库）
   3. `quality_weight_rubric.md`（**建议**：质量打分标尺）
   4. `multi_subtype_blend.md`（**建议**：多子类型融合模式）
-  5. `sibling_dynamic_patterns.md`（**建议**：兄弟/双子 互动模式，按用户原话"可写兄弟"）
-  6. `body_data_card_extended.md`（**可选**：数据卡 8-10 项扩展规范）
-  7. `subtype_priority_guide.md`（**建议**：子类型优先级建议指南）
-  8. `boundary_handling_sop.md`（**可选**：边界处理 SOP — 雷女性/雷血腥/雷袜鞋品牌）
-  9. `rhythm_subtype_specifics.md`（**可选**：节奏子类型特化）
-  10. `vocabulary_subtype_specifics.md`（**可选**：词汇子类型特化 — 榨精魔物/正太/足控/紧身衣）
+  5. `榨精生物.md`（**建议**：榨精生物图鉴，含触手兽/魅魔/黏液生物/肉壁空间生物/兽人/植物生命/元素生命）
+  6. `榨精道具.md`（**建议**：榨精道具库，含环/夹/针/管/杯/笼/椅/床/椅/仪/绳/链/环/胶囊/印记/控制器等）
+  7. `body_data_card_extended.md`（**可选**：数据卡 8-10 项扩展规范）
+  8. `subtype_priority_guide.md`（**建议**：子类型优先级建议指南）
+  9. `boundary_handling_sop.md`（**可选**：边界处理 SOP — 雷女性/雷血腥/雷袜鞋品牌）
+  10. `rhythm_subtype_specifics.md`（**可选**：节奏子类型特化）
+  11. `vocabulary_subtype_specifics.md`（**可选**：词汇子类型特化 — 榨精魔物/正太/足控/紧身衣）
 - 本 spec **不做** skill 任何文件改动
 
 ### G. 重新生成 12 份交付物
