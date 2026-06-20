@@ -480,46 +480,7 @@ def main():
 
     for a in agents:
         a["items"].sort(key=lambda s: (s.get("sa", "999"), s["ch_start"]))
-        # 段落号：同标题的子段共享基础号 + a/b/c/d 后缀
-        seq = []
-        cur_title = None
-        title_letter_idx = 0
-        letters = "abcdefghijklmnop"
-        for s in a["items"]:
-            if s["title"] != cur_title:
-                cur_title = s["title"]
-                title_letter_idx = 0
-            else:
-                title_letter_idx += 1
-            base = f"{a['grp']}.{seq.count('base')+1 if False else ''}"
-            # 用累计编号 + 字母后缀
-        # 重写：先按累计编号
-        seq2 = []
-        last_title = None
-        sub_idx = 0
-        for s in a["items"]:
-            if s["title"] != last_title:
-                sub_idx = 0
-                last_title = s["title"]
-            sub_idx += 1
-            if s["is_segment"] and s["seg_cnt"] > 1:
-                # 子段，加后缀
-                letter = letters[sub_idx - 1] if sub_idx - 1 < len(letters) else f"x{sub_idx}"
-                seq2.append(f"{a['grp']}.{seq2.count('base')+1 if False else ''}{letter}")
-            else:
-                seq2.append(None)  # 占位
-        # 用更简单方法：直接遍历，每部"小说+子段"分配一个唯一编号
-        seq3 = []
-        counter = 0
-        for s in a["items"]:
-            counter += 1
-            if s["is_segment"] and s["seg_cnt"] > 1:
-                # 用 seg_idx 字母
-                letter = letters[s["seg_idx"] - 1] if s["seg_idx"] - 1 < len(letters) else f"x{s['seg_idx']}"
-                seq3.append(f"{a['grp']}.{counter}{letter}")
-            else:
-                seq3.append(f"{a['grp']}.{counter}")
-        a["seq"] = seq3
+        a["seq"] = [f"{a['grp']}.{i+1}" for i in range(len(a["items"]))]
 
     md = render_md(agents)
     OUT.write_text(md, encoding="utf-8")
