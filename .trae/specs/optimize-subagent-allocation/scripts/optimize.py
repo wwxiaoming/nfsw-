@@ -60,15 +60,9 @@ def get_chapter_sizes(novel_dir_name):
             break
     if not base:
         return []
-    # 自然排序：提取 #N 中的数字 N
-    def nat_key(p):
-        m = re.search(r"^#(\d+)", p.name)
-        if m:
-            return (0, int(m.group(1)), p.name)
-        return (1, 0, p.name)
     items = []
     idx = 0
-    for f in sorted(base.iterdir(), key=nat_key):
+    for f in sorted(base.iterdir()):
         if not f.is_file() or not f.name.endswith(".txt"):
             continue
         if f.name.startswith("作品信息"):
