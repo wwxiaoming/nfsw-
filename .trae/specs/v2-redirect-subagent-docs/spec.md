@@ -2,17 +2,21 @@
 
 ## Why（背景）
 
-v3 spec（`optimize-documents-from-notes`）的方向被用户**反转**：
+v3 spec（`optimize-documents-from-notes`）方向被用户**反转**，且我上一版 v2 spec 又把方向搞反一次：
 
 - **v3 错方向**：把 6 份 `pixiv_深度阅读笔记_*.md` 和 xiaoyingxiong skill 当作"sub-agent 可参考资源"列在 2 份文档末尾"📖 可参考资源"小节
-- **v2 正方向**：
-  - 6 份笔记是**用户**读来**优化 skill** 的，不是给 sub-agent 的可参考
-  - sub-agent **应主动阅读** xiaoyingxiong skill 的 `references/` 6 个子文件（角色原型 / 剧情模板 / 场景钩子 / 对话风格 / 词汇 / 节奏），**应主动阅读**该批次对应的 1 份深度阅读笔记
-  - 但 2 份文档**不**用"📖 可参考资源"小节列路径（那会让 sub-agent 误以为可跳过）；改为**直接嵌入读取要求**到工作流中
-  - sub-agent **按规范读取**这些资源，**不是为了凑数**，是为了**生成笔记**（拓展优化深度阅读），**深度阅读**反向**优化 skill**（搞反了）
-- **skill 优化只读 SKILL.md 一个文件**（不读 references/），但**可新增** references 文件
+- **v2 上一版错方向**：撤了"📖 可参考资源"小节，但又把"sub-agent 主动读 references/ + 6 笔记"塞进 Step 0.5/6.5
+- **v2 本版正方向**：
+  - 撤掉"📖 可参考资源"小节，**同时不复活**任何形式的"sub-agent 读 references/ 或 6 笔记"工作流
+  - 6 份笔记是**用户**读的，**不是** sub-agent 的输入
+  - references/（xiaoyingxiong skill 6 个子文件）是**优化 skill 时**读的，**不是** sub-agent 的输入
+  - **优化 skill 时只读 SKILL.md 一个文件**（不读 references/）
+  - 但**可新增** references/ 子文件
+  - sub-agent **只看本规范 + 速查表 + 小说本身**，输出"灵活模板笔记"
+  - 笔记反向**优化 skill**（草稿做完后用户读 6 笔记 + 结合草稿再优化 skill）
+- **原小说位置不变**：`/workspace/帝王战队621 1：00/pixiv小说`（用户原话："原小说位置也没改呀"）
 
-另外，第三节 13 元素池不够丰富（仅 13 项），需扩展到 **20+ 元素**；按 6 大类（6 批量）每类写 **3-5 个引导方向**——这两项**独立于"反转"**。
+第三节 13 元素池不够丰富（仅 13 项），需扩展到 **20+ 元素**；按 6 大类（6 批量）每类写 **3-5 个引导方向**——这两项**独立于"反转"**。
 
 ## What Changes（变更内容）
 
@@ -99,47 +103,34 @@ v3 spec（`optimize-documents-from-notes`）的方向被用户**反转**：
 - 原作元素再诠释（角色关系重新搭配 / 新增角色 / 改动剧情线）
 - 读者画像（女性向读者群 + 同人读者群的偏好差异）
 
-### E. 把"sub-agent 主动读取"嵌入工作流（不写"可参考"小节）
-- **位置**：第二节 "执行模式：方案 1" 的 Step 1-6（sub-agent 启动时）
-- **新增 Step 0.5**（在 Step 1 之前）：
-  ```
-  ### Step 0.5：sub-agent 主动读取资源（必做，非可参考）
-  1. 读取 xiaoyingxiong_novel_writer skill 的所有 references/ 子文件
-     - 路径：/workspace/帝王战队621 1：00/skills/xiaoyingxiong_novel_writer/references/
-     - 6 个文件：character_archetypes.md / plot_templates.md / scene_hooks.md / 
-       dialogue_style.md / vocabulary.md / rhythm_templates.md
-  2. 读取本批次对应的 1 份深度阅读笔记
-     - 路径：/workspace/帝王战队621 1：00/深度阅读笔记/pixiv_深度阅读笔记_XX_XXX.md
-     - 用途：参考笔记结构 + 已有洞察 + 段号编排
-  3. **不是为了凑数**，是为了让笔记的"角色弧光 / 关键场景 / 核心套路"等元素
-     与 xiaoyingxiong skill 的 references/ 框架**对齐**，便于后续反向优化 skill
-  ```
-- **新增 Step 6.5**（在 Step 6 之后）：
-  ```
-  ### Step 6.5：sub-agent 提交"skill 优化建议"（v2 SKILL 升级建议 ≥ 1 条）
-  - 每篇笔记**至少 1 条**建议
-  - 建议方向：references/ 扩展 / 角色原型新增 / 场景钩子补全 / 
-    对话风格细化 / 词汇表扩充 / 节奏模板补充
-  - 建议格式：references/套路/新增xxx.md（具体到文件路径和内容大纲）
-  - 注：这是**唯一硬性要求**
-  ```
-
-> **不**写"可参考资源"小节（已删除 X+1/X+5），sub-agent 主动读取是**工作流的一部分**而非"可选参考"。
+### E. 撤掉"嵌入 sub-agent 主动读取"工作流（v2 上一版错方向，**删除**）
+- **不**新增 Step 0.5"sub-agent 主动读取资源"
+- **不**新增 Step 6.5"sub-agent 提交 skill 优化建议"
+- **不**在 2 份文档任何位置出现"sub-agent 读 xiaoyingxiong references/"的字样
+- **不**在 2 份文档任何位置出现"sub-agent 读 6 份深度阅读笔记"的字样
+- sub-agent 工作流**仅**：
+  1. 读速查表（确认分配）
+  2. 读本规范（执行 + 灵活模板 + 风险）
+  3. 读小说（按 SA-XX-X 指定路径）
+  4. 写草稿
+- 6 份笔记**不**作为 sub-agent 输入
+- references/ **不**作为 sub-agent 输入
 
 ### F. skill 优化（草稿之后做，本 spec 范围外）
-- 本 spec **只**做 A-E（清理 2 文档 + 扩展元素池 + 大类引导 + 嵌入工作流）
+- 本 spec **只**做 A/B/C/D（清理 2 文档 + 扩展元素池 + 大类引导）
 - skill 优化（改 SKILL.md / 新增 references/）**在草稿交付后**，用户阅读 6 笔记 + 结合草稿，再开新 spec
+- 优化 skill 时**只读 SKILL.md 一个文件**（不读 references/），**可新增** references/ 文件
 - 本 spec **不做** skill 任何文件改动
 
 ### G. 重新生成 12 份交付物
-- 因为 2 份源文档变化（A/B/C/D/E），12 份交付物需重新生成
+- 因为 2 份源文档变化（A/B/C/D），12 份交付物需重新生成
 - **位置**：`/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/`
 - **改动点**：
   - 删除每份速查表 "## X+5" 段（已删除）
   - 删除每份速查表 "## X+1. 大文件读取提示" 段（已删除） + 重新编号 X+2/X+3/X+4 → X+1/X+2/X+3
   - 删除每份输入输出规范 "## X+1. 📖 可参考资源" 段（已删除）
   - 每份输入输出规范第三节同步扩展 13→20+ 元素 + 新增 3.4 大类引导方向
-  - 每份输入输出规范第二节新增 Step 0.5 + Step 6.5 嵌入工作流
+- **不**改动 12 份中的其他内容（不嵌入 Step 0.5/6.5）
 
 ## Impact（影响范围）
 
@@ -149,12 +140,12 @@ v3 spec（`optimize-documents-from-notes`）的方向被用户**反转**：
     - 重编号 X+2/X+3/X+4（标题 + 锚点）
   - `/workspace/帝王战队621 1：00/documents/sub-agent输入输出规范.md`（236 → ~270 行）
     - 删 X+1（41 行）
-    - 扩展 13→20+ 元素池（+12 行）+ 新增 3.4 大类引导方向（+30 行）
-    - 新增 Step 0.5 + Step 6.5（+15 行）
+    - 扩展 13→20+ 元素池（+12 行）
+    - 新增 3.4 大类引导方向（+30 行）
 - **改 12 份交付物**：每份速查表 -X 行 + 重新编号；每份输入输出规范 同步扩展
 - **不动**：
   - 6 份 `pixiv_深度阅读笔记_*.md`
-  - 77 部源小说
+  - 77 部源小说（位置 `/workspace/帝王战队621 1：00/pixiv小说`）
   - 73 sub-agent 分配（`tmp/execution_packets.md`）
   - xiaoyingxiong skill（任何文件）
   - 旧 spec 4 份（已完成）
@@ -171,27 +162,30 @@ v3 spec（`optimize-documents-from-notes`）的方向被用户**反转**：
 2. **删 X+1**：删除速查表"X+1. 大文件读取提示"段（用户原话）
 3. **扩展元素池**：13 → 20+ 元素（用户原话）
 4. **大类引导方向**：6 大类 × 3-5 个方向（用户原话）
-5. **嵌入工作流**：sub-agent 主动读取 = 工作流一部分，**不**写"可参考"小节
+5. **不嵌入 sub-agent 读 resources/ 或 6 笔记的工作流**：sub-agent 输入仅 = 速查表 + 本规范 + 小说
 6. **唯一硬性要求保持**：v2 SKILL 升级建议 ≥ 1 条
 7. **三选二覆盖保持**：关键章节 / 核心套路 / 关键场景 至少 2 项
 8. **500KB 硬约束保留**：在 X+3 实测边界说明中（不丢失）
 9. **no 字符下限**：不锁字数
 10. **方案 1 执行模式**：不换方案
-11. **只读 SKILL.md 优化 skill**（本 spec 不做，仅 A-E）
+11. **优化 skill 时只读 SKILL.md 一个文件**（本 spec 不做 skill 优化）
 12. **可新增 references 文件**（本 spec 不做）
 13. **草稿之后再读 6 笔记 + 结合优化**（本 spec 不做）
+14. **原小说位置不变**：`/workspace/帝王战队621 1：00/pixiv小说`
 
 ## 不做（明确范围）
 
 - 不改 xiaoyingxiong skill（任何文件，包括 SKILL.md 和 references/）
-- 不改 6 份 `pixiv_深度阅读笔记_*.md`
+- 不读 6 份 `pixiv_深度阅读笔记_*.md`（草稿之后再读）
+- 不读 xiaoyingxiong skill 的 references/（**只读 SKILL.md** 优化 skill，但本 spec 不做）
+- 不让 sub-agent 读 references/ 或 6 笔记（v2 上一版错方向）
 - 不改 77 部源小说
+- 不改原小说位置（`/workspace/帝王战队621 1：00/pixiv小说`）
 - 不改 73 sub-agent 数量
 - 不改 `tmp/execution_packets.md`
-- 不读 6 份 `pixiv_深度阅读笔记_*.md`（草稿之后再读）
-- 不读 xiaoyingxiong skill 的 references/（**只读 SKILL.md** 优化 skill，但本 spec 不优化 skill）
 - 不写"📖 可参考资源"小节（已删，不复活）
 - 不写"必含/必标/强制减分/严禁"等硬指标
 - 不把 13 元素灵活模板改成硬模板（仅扩展元素数，不锁元素数）
 - 不在 2 份文档中复述 6 笔记的具体洞察
 - 不在 2 份文档中复述 xiaoyingxiong skill references/ 的具体内容
+- 不在 2 份文档中复述 6 笔记 / references/ 的路径（彻底不出现）
