@@ -49,8 +49,9 @@ def parse_packets():
             title_raw = m.group(3).strip()
             title = re.split(r"\s*/\s*\d+", title_raw)[0].strip()
             chapters = int(m.group(4))
+            total_kb = float(m.group(5))
+            max_kb = float(m.group(6))
             novel_type = m.group(7).strip()
-            # 推断 sub_dir：优先用批量标题里第一个子目录
             sub_dir = current_dirs[0]
             novels.append({
                 "sa": sa,
@@ -58,6 +59,8 @@ def parse_packets():
                 "sub_dir": sub_dir,
                 "title": title,
                 "chapters": chapters,
+                "total_kb": total_kb,
+                "max_kb": max_kb,
                 "type": novel_type,
             })
     return novels
@@ -79,6 +82,30 @@ def render_md(novels):
     L.append("3. **Write 笔记对应段落**（段落编号 4.X / 5.X）→ 写入目标见各批量开头\"写入目标\"段")
     L.append("")
     L.append("> ⚠ 本表**仅做分配**，每本小说的**输出指引（灵活模板）**见 `sub-agent输入输出规范.md`。**纯分配，不约束输出**。")
+    L.append("")
+    L.append("---")
+    L.append("")
+    L.append("## 1.5 500KB 软上限 & 拆段指引")
+    L.append("")
+    L.append("> **软上限** = 经验值参考，**不强制**。实测单 sub-agent 上下文能稳定读远超 500KB，但**默认**仍按 500KB 切段，便于并行错峰。")
+    L.append("")
+    L.append("### 拆段判定（按本表 KB 列判断）")
+    L.append("")
+    L.append("| 情况 | 处理 |")
+    L.append("|---|---|")
+    L.append("| 总 KB ≤ 500 | **不拆**，单 sub-agent 直接 Read 全文 |")
+    L.append("| 总 KB > 500 **且** 章节数 ≥ 3 | **建议拆 2-3 段**：按章节均分，确保每段 ≤ 500KB |")
+    L.append("| 总 KB > 500 **但** 章节数 ≤ 2（单章硬读） | **不拆**，单 sub-agent 一次读完，写一条完整笔记 |")
+    L.append("")
+    L.append("### 拆段执行方法（建议方案 A）")
+    L.append("1. **多 sub-agent 接力**：每段 = 1 个 sub-agent ID（SA-XX-A 读 1-N 章，SA-XX-A' 读 N+1-M 章…），各自写自己段号的草稿")
+    L.append("2. **主代理合并**：所有段草稿写完后，主代理按 4.1 / 4.2 / 4.3 ... 顺序串行合并到正式笔记")
+    L.append("3. **段号约定**：拆段后 4.X 段号连续（如 4.1=第 1 段，4.2=第 2 段，4.3=第 3 段），不要跳号")
+    L.append("")
+    L.append("### 注意事项")
+    L.append("- **不强拆**：若 AI 评估后可一次读完（如上下文长 + 章节短），可跳过硬切段")
+    L.append("- **单章硬读例外**：`SA-03-T 光环 无限` 这种 3 章/单章 > 500KB 的，不切段，直接整本读")
+    L.append("- **拆段不拆 ID**：同一小说的多段共用一个 Sub-agent 编号族（SA-XX-A/A'/A''），便于合并时识别")
     L.append("")
     L.append("---")
     L.append("")
@@ -157,10 +184,10 @@ def render_md(novels):
                 label = "高分 4.X（超限本独立）" if sec == "4" else "中分 5.X（聚合包）"
                 L.append(f"#### {label}（{cnt} 部）")
                 L.append("")
-                L.append("| Sub-agent | 作品 | 完整路径 | 章节 | 写入 |")
-                L.append("|---|---|---|---:|---|")
+                L.append("| Sub-agent | 作品 | 完整路径 | 章节 | 总KB | 最大KB | 写入 |")
+                L.append("|---|---|---|---:|---:|---:|---|")
             path = f"`工作区/pixiv小说/{n['sub_dir']}/{n['title']}/`"
-            L.append(f"| SA-{i:02d}-{n['letter']} | {n['title']} | {path} | {n['chapters']} | {n['section_num']}.{n['sub_idx']} |")
+            L.append(f"| SA-{i:02d}-{n['letter']} | {n['title']} | {path} | {n['chapters']} | {n['total_kb']} | {n['max_kb']} | {n['section_num']}.{n['sub_idx']} |")
         L.append("")
 
         L.append("---")
@@ -210,7 +237,7 @@ def render_md(novels):
     L.append("---")
     L.append("")
 
-    L.append("*本表为 2026-06-21 简化版：每部小说 = 1 个 sub-agent，不拆段，不锁大小，AI 按内容自由发挥。*")
+    L.append("*本表为 2026-06-21 简化版：每部小说默认 1 个 sub-agent，KB 列作软上限参考，单章/小本不强制拆段，AI 按内容自由发挥。*")
     L.append("")
 
     return "\n".join(L)
