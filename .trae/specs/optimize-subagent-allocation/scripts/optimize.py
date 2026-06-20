@@ -136,12 +136,12 @@ def batch_to_file(batch):
 
 def render_md(agents):
     lines = []
-    lines.append("# Sub-agent 分配速查表（500KB 硬约束优化版）")
+    lines.append("# Sub-agent 分配速查表（500KB 硬约束版）")
     lines.append("")
-    lines.append("> **用途**：sub-agent 启动时**单文件速查**，无需再翻源文档。  ")
+    lines.append("> **用途**：sub-agent 启动时**单文件速查**，仅做**分配指引**，不约束 AI 输出字数。  ")
     lines.append("> **核心硬约束**：每个 sub-agent 分配的源小说**总大小 ≤ 500KB**（实测单次 Read 上限）。  ")
     lines.append("> **来源**：")
-    lines.append("> - `tmp/execution_packets.md`（101 部小说 + 章节 + 总大小清单）")
+    lines.append("> - `tmp/execution_packets.md`（77 部小说 + 章节 + 总大小清单）")
     lines.append("> - 各小说目录的实际章节文件字节数（贪心装箱）")
     lines.append("> - `v2-阶段4.1-4.3-逐本通读+笔记实时写入_2026-06-20.md`（规划层）")
     lines.append("> - 实测：500KB 稳定 / 600KB 截断（2026-06-20）")
@@ -153,83 +153,36 @@ def render_md(agents):
     lines.append("2. **Read 源小说**（路径在本小节每条记录中）→ 单段 ≤500KB 直接读；超 500KB 的子段用 `offset`/`limit` 分段")
     lines.append("3. **Write 笔记对应段落**（段落编号 4.X / 5.X）→ 写入目标见各批量开头\"写入目标\"段")
     lines.append("")
+    lines.append("> ⚠ 本表**仅做分配**，每本小说的**输出指引（灵活模板）**见规划文档 `v2-阶段4.1-4.3-...`。**无字符下限、无必含项硬指标**——AI 按作品实际自由发挥。")
+    lines.append("")
     lines.append("---")
     lines.append("")
 
     lines.append("## 2. 批量总览")
     lines.append("")
-    lines.append("| 批量 | 笔记文件 | sub-agent 数 | 分配单元数 | 字符下限合计 |")
-    lines.append("|---|---|---:|---:|---:|")
+    lines.append("| 批量 | 笔记文件 | sub-agent 数 | 分配单元数 |")
+    lines.append("|---|---|---:|---:|")
     file_groups = {}
     for a in agents:
         file_groups.setdefault(a["file"], []).append(a)
     batch_idx_disp = 0
-    total_chars_all = 0
     total_units_all = 0
     for bf, ags in file_groups.items():
         batch_idx_disp += 1
         ags.sort(key=lambda a: (a["grp"], a["seq"][0] if a["seq"] else ""))
-        total_chars = sum(
-            max(_char_min(s), 6000) for a in ags for s in a["items"]
-        )
-        total_chars_all += total_chars
         bname = bf.replace("pixiv_深度阅读笔记_", "").replace(".md", "")
         units = sum(len(a['items']) for a in ags)
         total_units_all += units
-        lines.append(f"| 批量 {batch_idx_disp} | `{bf}` | {len(ags)} | {units} | ≥{total_chars:,} |")
+        lines.append(f"| 批量 {batch_idx_disp} | `{bf}` | {len(ags)} | {units} |")
     total_agents = len(agents)
-    lines.append(f"| **合计** | — | **{total_agents}** | **{total_units_all}** | ≥{total_chars_all:,} |")
-    lines.append("")
-    lines.append("> 注：字符下限按各子段字符下限累加；上限不封顶。")
+    lines.append(f"| **合计** | — | **{total_agents}** | **{total_units_all}** |")
     lines.append("")
     lines.append("**所有写入目标路径前缀**：`.trae/specs/expand_xiaoyingxiong_skill_v2/`")
     lines.append("")
     lines.append("---")
     lines.append("")
 
-    lines.append("## 3. 字符预算（柔性下限 + 上限不封顶）")
-    lines.append("")
-    lines.append("**核心原则**：下限保质量，上限不封顶。")
-    lines.append("")
-    lines.append("| 调整后权重 | 字符下限 | 5 必含版本 |")
-    lines.append("|---:|---|---|")
-    lines.append("| 9-10 分（高分） | **≥ 15,000** 字符 | 完整 5 必含 + 推荐元素 |")
-    lines.append("| 7-8 分（中分） | **≥ 6,000** 字符 | 5 必含（可略简） |")
-    lines.append("| 5-6 分（中低分） | **≥ 3,000** 字符 | 5 必含（紧凑） |")
-    lines.append("| 1-4 分（低分） | **≥ 1,500** 字符 | 4 必含 |")
-    lines.append("| 75+ 章超长篇单本 | **可超过 80,000** 字符 | 完整 5 必含 + 章节详细表 |")
-    lines.append("| 30+ 章长篇 | **可超过 40,000** 字符 | 完整 5 必含 |")
-    lines.append("")
-    lines.append("**章节数基准公式**（推荐起算点）：")
-    lines.append("- **每章 800-1,500 字符**（保证每章都有实质内容）")
-    lines.append("- 例：24 章 = 19,200-36,000 字符（9-10 分区间）")
-    lines.append("- 例：10 章 = 8,000-15,000 字符（9-10 分区间）")
-    lines.append("")
-    lines.append("> ⚠ sub-agent 可**根据实际内容自由突破上限**——写得越详细越好。**硬性下限是必须达到的**。")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-
-    lines.append("## 4. 最少必含项（不可省略 4 项 + 推荐元素池）")
-    lines.append("")
-    lines.append("### 4.1 最少必含 4 项")
-    lines.append("1. **作品定位**（核心卖点 + XP 命中）")
-    lines.append("2. **关键章节**（至少 3 个章节的具体情节）")
-    lines.append("3. **核心套路**（至少 3 条本小说特有的套路）")
-    lines.append("4. **v2 SKILL 升级建议**（至少 1 条对应 `references` 扩展）")
-    lines.append("")
-    lines.append("### 4.2 推荐元素池（13 项，可自由选用、扩展、重组）")
-    lines.append("- 作品定位 / 关键章节 / 完整套路 / 关键场景 / 角色弧光")
-    lines.append("- 世界观设定 / 写作技法 / v2 SKILL 升级建议")
-    lines.append("- 可复用元素 / 戏剧冲突结构 / 情绪曲线")
-    lines.append("- 对白风格 / 跨作品对比")
-    lines.append("")
-    lines.append("> 高分作品（9-10 分）可扩展到 7-10 个元素；中低分灵活精简。")
-    lines.append("")
-    lines.append("---")
-    lines.append("")
-
-    lines.append("## 5. 写入位置速查")
+    lines.append("## 3. 写入位置速查")
     lines.append("")
     lines.append("| 笔记文件 | 4.X 段（高分 / 超限本独立） | 5.X 段（中分 / 聚合包） | 6.X 段（低分） |")
     lines.append("|---|---|---|---|")
@@ -251,7 +204,7 @@ def render_md(agents):
             continue
         batch_idx += 1
         fname = f.replace("pixiv_深度阅读笔记_", "").replace(".md", "")
-        lines.append(f"## {5 + batch_idx}. 批量 {batch_idx}：{fname}（{len(ags)} sub-agent）")
+        lines.append(f"## {3 + batch_idx}. 批量 {batch_idx}：{fname}（{len(ags)} sub-agent）")
         lines.append("")
         n4 = sum(len(a["items"]) for a in ags if a["grp"] == "4")
         n5 = sum(len(a["items"]) for a in ags if a["grp"] == "5")
@@ -274,9 +227,8 @@ def render_md(agents):
             seg_note = "（含超限本子段）" if has_seg else ""
             lines.append(f"### SA-{batch_idx:02d}-{letter}：《{title_summary}》{seg_note}")
             lines.append("")
-            lines.append("| # | 作品 | 完整路径 | 章节 | KB | 5必含版本 | 字符下限 | 实际读 X/Y | 写入 |")
-            lines.append("|---:|---|---|---:|---:|---|---:|---|---|")
-            char_total = 0
+            lines.append("| # | 作品 | 完整路径 | 章节 | KB | 实际读 X/Y | 写入 |")
+            lines.append("|---:|---|---|---:|---:|---|---|")
             for i, (s, seq) in enumerate(zip(a["items"], a["seq"]), 1):
                 sub = s["path_sub"]
                 title = s["title"]
@@ -289,33 +241,14 @@ def render_md(agents):
                 else:
                     ch_disp = str(s["chapters"])
                 kb_disp = f"{s['kb']:.1f}"
-                if s["type"] == "超限本独立":
-                    if s["chapters"] >= 75:
-                        mandatory = "完整（80k）"
-                    elif s["chapters"] >= 30:
-                        mandatory = "完整（40k）"
-                    else:
-                        mandatory = "完整"
-                else:
-                    mandatory = "5 必含"
-                if s["is_segment"]:
-                    base = _char_min(s)
-                    ratio = (s["ch_end"] - s["ch_start"] + 1) / s["chapters"]
-                    char_min_v = max(3000, int(base * ratio))
-                    mandatory = f"{mandatory}（按段）"
-                else:
-                    char_min_v = _char_min(s)
-                char_total += char_min_v
                 if s["is_segment"]:
                     actual = f"{s['ch_end']-s['ch_start']+1}/{s['ch_end']-s['ch_start']+1} (100%)"
                 else:
                     actual = f"{s['chapters']}/{s['chapters']} (100%)"
                 write = f"{seq}"
                 seg_tag = f"（子段 {s['seg_idx']}/{s['seg_cnt']}）" if s["is_segment"] else ""
-                lines.append(f"| {i} | {title}{seg_tag} | {path} | {ch_disp} | {kb_disp} | {mandatory} | ≥{char_min_v:,} | {actual} | {write} |")
-            lines.append(f"- **本 sub-agent 字符下限合计**：≥{char_total:,}")
+                lines.append(f"| {i} | {title}{seg_tag} | {path} | {ch_disp} | {kb_disp} | {actual} | {write} |")
             if a['total_kb'] > HARD_LIMIT:
-                # 单章硬读情况
                 lines.append(f"- **本 sub-agent 总大小**：{a['total_kb']:.1f} KB（**单章硬读** ⚠，单章节文件 > 500KB 无法再拆分，sub-agent 需直接 Read 全文，注意上下文溢出风险）")
             else:
                 lines.append(f"- **本 sub-agent 总大小**：{a['total_kb']:.1f} KB（硬约束 ≤ 500KB ✓）")
@@ -375,7 +308,7 @@ def render_md(agents):
     lines.append("- 处理小说：N 部（列出作品名 + 子段号）")
     lines.append("- 实际读取章节：X / Y 章（X% = X/Y 计算得出，目标 100%，但不强制）")
     lines.append("- 写入笔记：pixiv_深度阅读笔记_XX_XXX.md 段落 4.X / 5.X")
-    lines.append("- 实际输出字符：~XXXXX（应 ≥ 字符下限）")
+    lines.append("- 实际输出字符：~XXXXX（无硬性下限，AI 按内容自由发挥）")
     lines.append("- 分段信息：（如有；大文件需说明分段策略）")
     lines.append("- 异常情况：（如有；如实际读 < 100% 需说明原因）")
     lines.append("```")
@@ -387,10 +320,10 @@ def render_md(agents):
     lines.append("")
     lines.append("| 文档 | 角色 |")
     lines.append("|---|---|")
-    lines.append("| 本速查表（sub-agent 分配速查表） | sub-agent **执行时**查 |")
+    lines.append("| 本速查表（sub-agent 分配速查表） | sub-agent **执行时**查（**仅做分配**） |")
     lines.append("| `工作区/pixiv小说/_整理报告.md` | **索引层**（按子类+权重分类） |")
-    lines.append("| `工作区/documents/v2-阶段4.1-4.3-逐本通读+笔记实时写入_2026-06-20.md` | **规划层**（批量+决策+总字符+实测边界） |")
-    lines.append("| `工作区/tmp/execution_packets.md` | **小说元数据**（101 部 + 章节 + 大小） |")
+    lines.append("| `工作区/documents/v2-阶段4.1-4.3-逐本通读+笔记实时写入_2026-06-20.md` | **规划层**（含每本小说灵活模板输出指引） |")
+    lines.append("| `工作区/tmp/execution_packets.md` | **小说元数据**（77 部 + 章节 + 大小） |")
     lines.append("| `pixiv_深度阅读笔记_*.md`（6 份） | **写入目标** |")
     lines.append("")
     lines.append("---")
@@ -409,7 +342,7 @@ def render_md(agents):
     lines.append("")
     lines.append("**本规划基于上述实测结果制定，500KB 为单次读取硬上限，所有大文件必须拆分后执行。**")
     lines.append("")
-    lines.append("**2026-06-21 优化**：本速查表已在 sub-agent 层面强制 ≤500KB 硬约束，13 部超限本已按章节大小贪心拆段，无需 sub-agent 自行判断。")
+    lines.append("**2026-06-21 优化**：本速查表已在 sub-agent 层面强制 ≤500KB 硬约束，16 部超限本已按章节大小贪心拆段，无需 sub-agent 自行判断。**输出字数不限，由规划文档的灵活模板指引**。")
     lines.append("")
 
     return "\n".join(lines)
