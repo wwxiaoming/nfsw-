@@ -149,11 +149,12 @@
 
 > AI 可以**自由增删元素**、**重命名元素标题**、**调整顺序**——本格式仅作**参考骨架**。
 
-### 3.5 11 份可选增量 references 建议
+### 3.5 12 份可选增量 references 建议
 
 > 草稿做完后，用户会基于深度阅读笔记决定是否新增以下 references 到 xiaoyingxiong skill。本节是**候选清单**，**不**是必含。
 >
-> v5 增量：**删除** `sibling_dynamic_patterns.md`（兄弟/双子 互动模式），**新增** `extraction_creatures.md` + `extraction_tools.md`（v4 英文名统一）。
+> v5 增量：**删除** `sibling_dynamic_patterns.md`（兄弟/双子 互动模式），**新增** `extraction_creatures.md` + `extraction_tools.md`（v4 英文名统一）。  
+> **v6 增量**：新增 `extraction_methods.md`（榨精方式指南 — 榨精手法 / 龟责技巧 / 边缘控制技巧 等）。
 
 1. `subtype_decision_tree.md`（子类型决策表）
 2. `xp_match_patterns.md`（XP 命中模式库）
@@ -166,6 +167,7 @@
 9. `boundary_handling_sop.md`（边界处理 SOP — 雷女性/雷血腥/雷袜鞋品牌）
 10. `rhythm_subtype_specifics.md`（节奏子类型特化）
 11. `vocabulary_subtype_specifics.md`（词汇子类型特化）
+12. `extraction_methods.md`（**新增**：榨精方式指南 — 榨精手法 / 龟责技巧 / 边缘控制技巧 等）
 
 ---
 
@@ -218,13 +220,20 @@ grep -hE "^## [45]\.[0-9]+" 草稿/pixiv小说_<batch>_*.md | sort | uniq -c | a
 
 ## 七、Files to Execute
 
+> **本规范自身**：`/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/batch-05_修真玄幻+外语/输入输出规范_batch-05_修真玄幻+外语.md`  
+> **本批配套速查表**：`/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/batch-05_修真玄幻+外语/速查表_batch-05_修真玄幻+外语.md`  
+> **总速查表（旧版 v5，6 批量）**：`/workspace/帝王战队621 1：00/documents/sub-agent分配速查表.md`  
+> **总规范（旧版 v5）**：`/workspace/帝王战队621 1：00/documents/sub-agent输入输出规范.md`  
+> **workspace 根**：`/workspace/帝王战队621 1：00/`
+
 | 文件 | 操作 | 说明 |
 |---|---|---|
-| `工作区/tmp/execution_packets.md` | **读** | 77 部小说元数据 |
-| `工作区/documents/sub-agent分配速查表.md` | **读** | sub-agent 分配指引（**仅做分配**） |
-| `工作区/documents/sub-agent输入输出规范.md` | **读** | 本文件：输入输出规范 + 灵活模板 |
-| `草稿/pixiv小说_<batch>_<SA-ID>_<作品>.md` | **写** | sub-agent 草稿（每本独立） |
-| `工作区/pixiv_深度阅读笔记_*.md`（6 份） | **写** | 主代理合并后的正式笔记 |
+| `/workspace/帝王战队621 1：00/tmp/execution_packets.md` | **读** | 77 部小说元数据（总清单） |
+| `/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/batch-05_修真玄幻+外语/速查表_batch-05_修真玄幻+外语.md` | **读** | 本批次 sub-agent 分配（SA-05-A 至 SA-05-F）— **仅做分配** |
+| `/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/batch-05_修真玄幻+外语/输入输出规范_batch-05_修真玄幻+外语.md` | **读** | 本文件：输入输出规范 + 灵活模板 |
+| `/workspace/帝王战队621 1：00/pixiv小说/06_修真玄幻其他/<作品>/#N 第M章.txt` 或 `07_外语/<作品>/#N 第M章.txt` | **读** | 源小说（按速查表指定路径；单段 ≤500KB 直接读） |
+| `/workspace/帝王战队621 1：00/草稿/pixiv小说_05_<SA-ID>_<作品>.md` | **写** | sub-agent 草稿（每本独立；**主代理需提前创建 `/workspace/帝王战队621 1：00/草稿/` 目录**） |
+| `/workspace/帝王战队621 1：00/深度阅读笔记/pixiv_深度阅读笔记_*.md`（6 份） | **写** | 主代理合并后的正式笔记 |
 
 ---
 
