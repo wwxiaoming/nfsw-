@@ -13,7 +13,7 @@
 |---|---|---|---|
 | 文档 1 | 速查表（本文件） | `/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/batch-05_修真玄幻+外语/速查表_batch-05_修真玄幻+外语.md` | 分配指引（SA-05-A 至 SA-05-F） |
 | 文档 2 | 输入输出规范 | `/workspace/帝王战队621 1：00/documents/sub-agent-deliverables/batch-05_修真玄幻+外语/输入输出规范_batch-05_修真玄幻+外语.md` | 执行模式 + 灵活模板 |
-| 数据 | 小说文件夹 | `/workspace/帝王战队621 1：00/pixiv小说/` | 源小说（77 部，按 9 子类组织） |
+| 数据 | 小说文件夹 | `/workspace/帝王战队621 1：00/pixiv小说/1-6_批量分配/` | 子段已按 SA 预分配（共 73 SA） |
 
 **sub-agent 4 步工作流**：
 1. **Read** 速查表 → 找到自己的 SA-XX-X
